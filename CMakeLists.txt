@@ -71,6 +71,7 @@ add_message_files(
 add_service_files(
   FILES
   ImPro_getImg.srv
+  ImPro_doImPro.srv
 )
 
 ## Generate actions in the 'action' folder

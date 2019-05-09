@@ -1,0 +1,6 @@
+int8 shelfID
+---
+int8 shelfID
+int8[] potID
+bool[] descision
+float32[] probability

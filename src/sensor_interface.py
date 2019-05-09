@@ -12,7 +12,7 @@ from math import floor
 
 # Constants
 _RATE = 10 #Hz
-_PIC_LOGGING = True
+_PIC_LOGGING = False
 
 # Global Variable
 pub_airTemp = 0
@@ -56,7 +56,7 @@ def getSensorReading():
 	#rospy.loginfo("Humid : %lf, air : %lf, water : %lf",humidity, temp_air, temp_water)
 	return humidity, temp_air, temp_water, measTime
 
-def srvHld_getImg(req):
+def srvHdl_getImg(req):
 	imgFileName = takePic()
 	return str(imgFileName)
 
@@ -70,7 +70,9 @@ def initPublisher():
     pub_waterTemp = rospy.Publisher('/meas/waterTemp', Meas_sensor, queue_size=10)
     pub_humidity = rospy.Publisher('/meas/humidity', Meas_sensor, queue_size=10)
     
-    rospy.Service('/imPro/getImg', ImPro_getImg, srvHld_getImg)
+
+def initServices():
+    rospy.Service('/imPro/getImg', ImPro_getImg, srvHdl_getImg)
 
 
 def publishMeasurements():
@@ -101,6 +103,7 @@ def publishMeasurements():
 
 def main():
     initPublisher()
+    initServices()
     rate = rospy.Rate(_RATE)
     rospy.loginfo("swag_interface : Running...")
     while not rospy.is_shutdown():

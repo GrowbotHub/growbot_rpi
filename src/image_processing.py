@@ -1,22 +1,26 @@
 #!/usr/bin/env python
+_FAKE_IMPRO = True
+
 import rospy
-from growbot_tlc.msg import ImPro_img
-from growbot_tlc.msg import ImPro_trig
-from growbot_tlc.msg import ImPro_res
+from growbot_rpi.srv import ImPro_doImPro
+from growbot_rpi.srv import ImPro_getImg
 
 #img processing libs
-import tensorflow as tf
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-import scipy
-from scipy.misc import imread
-from keras.models import load_model
-from skimage.transform import resize
+if(not _FAKE_IMPRO) :
+    import tensorflow as tf
+    import numpy as np
+    import matplotlib
+    matplotlib.use("Pdf")
+    import matplotlib.pyplot as plt
+    from PIL import Image
+    import scipy
+    from scipy.misc import imread
+    from keras.models import load_model
+    from skimage.transform import resize
 
 
 # Constants
-_MODEL_FILE = 'filename.model'
+_MODEL_FILE = '/home/pi/ros_catkin_ws/src/growbot_rpi/imPro/filename.model'
 _NB_POT_PER_ROW = 4
 
 _ROW_NAME = 0
@@ -28,6 +32,8 @@ pub_res = 0
 
 
 def checkRipeness(imgFileName):
+    if _FAKE_IMPRO :
+        return [('top', 0, 0.99),('middle', 1, 0.69),('bottom', 0, 0.89)]
     # load the model
     model = load_model(_MODEL_FILE)
 
@@ -77,24 +83,34 @@ def checkRipeness(imgFileName):
     return resTot
 
 def getImage():
-    # check robArm not moving
-    # check whell not moving
-    # use srv to get image from swag interface
-    #return file path to imagae
-    return 'forTest/image1.jpg'
+    # TODO check robArm not moving
+    # TODO check whell not moving
+    rospy.wait_for_service('/imPro/getImg')
+    try:
+        getPic = rospy.ServiceProxy('/imPro/getImg', ImPro_getImg)
+        return getPic()
+    except rospy.ServiceException, e:
+        rospy.logerr("Service call failed: %s", e)
+        rospy.logwarn("Returned default image path")
+        return '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/pic.jpg'
 
 
-def imgProcessing(data):
+def srvHdl_imgProcessing(req):
+    # TODO check if img processing available for given shelfID
     imageFilePath = getImage()
     res = checkRipeness(imageFilePath)
+
+    potID = []
+    decision = []
+    probability = []
+    shelfID = req.shelfID
     for rowRes in res :
         for i in range(0,_NB_POT_PER_ROW) :
-            msg_result = ImPro_res()
-            msg_result.decision = rowRes[_DECISION]
-            msg_result.probaility = rowRes[_PROBABILITY]
-            msg_result.shelfID = 0 # TODO
-            msg_result.potID = res.index(rowRes)*i
-            pub_res.publish(msg_result)
+            decision.append(bool(rowRes[_DECISION]))
+            probability.append(rowRes[_PROBABILITY])
+            potID.append(int(res.index(rowRes)*_NB_POT_PER_ROW + i))
+
+    return {'shelfID' : shelfID, 'potID' : potID, 'descision' : decision, 'probability' : probability}
 
 
 def subscribe():
@@ -102,14 +118,18 @@ def subscribe():
 
 
 def initPublisher():
-    global pub_res
-    pub_res = rospy.Publisher('/imPro/res', ImPro_res, queue_size=10)
+    pass
+
+def initServices():
+    rospy.Service('/imPro/doImPro', ImPro_doImPro, srvHdl_imgProcessing)
+    
 
 
 
 def main():
     subscribe()
     initPublisher()
+    initServices()
     rospy.loginfo("image_processing : Running...")
     rospy.spin()
 
