@@ -2,8 +2,8 @@
 
 import rospy
 import RPi.GPIO as GPIO
-from growbot_rpi.msg import Wheel_moving
-from growbot_rpi.msg import Wheel_target
+from growbot_msg.msg import Wheel_moving
+from growbot_msg.msg import Wheel_target
 
 GPIO.setmode(GPIO.BOARD)
 

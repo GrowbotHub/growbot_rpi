@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from growbot_rpi.srv import *
+from growbot_msg.srv import *
 
 def callServ():
     rospy.wait_for_service('/imPro/getImg')

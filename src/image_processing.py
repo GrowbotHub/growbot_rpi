@@ -2,8 +2,8 @@
 _FAKE_IMPRO = True
 
 import rospy
-from growbot_rpi.srv import ImPro_doImPro
-from growbot_rpi.srv import ImPro_getImg
+from growbot_msg.srv import ImPro_doImPro
+from growbot_msg.srv import ImPro_getImg
 
 #img processing libs
 if(not _FAKE_IMPRO) :

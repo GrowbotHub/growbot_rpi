@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-from growbot_rpi.msg import Meas_sensor
-from growbot_rpi.srv import ImPro_getImg
+from growbot_msg.msg import Meas_sensor
+from growbot_msg.srv import ImPro_getImg
 import time
 from picamera import PiCamera
 from w1thermsensor import W1ThermSensor

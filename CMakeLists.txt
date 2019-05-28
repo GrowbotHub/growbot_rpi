@@ -11,7 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  message_generation
+  growbot_msg
+  #message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -48,32 +49,32 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  Alarm.msg
-  ImPro_img.msg
-  ImPro_res.msg
-  ImPro_trig.msg
-  Log_error.msg
-  Log_info.msg
-  Log_warn.msg
-  Meas_sensor.msg
-  RobArm_cmd.msg
-  RobArm_moving.msg
-  User_cmd.msg
-  Wheel_moving.msg
-  Wheel_pos.msg
-  Wheel_target.msg
-  Log_info.msg
-)
+#add_message_files(
+#  FILES
+#  Alarm.msg
+#  ImPro_img.msg
+#  ImPro_res.msg
+#  ImPro_trig.msg
+#  Log_error.msg
+#  Log_info.msg
+#  Log_warn.msg
+#  Meas_sensor.msg
+#  RobArm_cmd.msg
+#  RobArm_moving.msg
+#  User_cmd.msg
+#  Wheel_moving.msg
+#  Wheel_pos.msg
+#  Wheel_target.msg
+#  Log_info.msg
+#)
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  ImPro_getImg.srv
-  ImPro_doImPro.srv
-  Wheel_goTo.srv
-)
+#add_service_files(
+#  FILES
+#  ImPro_getImg.srv
+#  ImPro_doImPro.srv
+#  Wheel_goTo.srv
+#)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -83,10 +84,10 @@ add_service_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
+#generate_messages(
+#  DEPENDENCIES
+#  std_msgs
+#)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -120,7 +121,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES growbot_rpi
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+  CATKIN_DEPENDS roscpp rospy std_msgs growbot_msg
 #  DEPENDS system_lib
 )
 
