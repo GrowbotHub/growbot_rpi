@@ -72,6 +72,7 @@ add_service_files(
   FILES
   ImPro_getImg.srv
   ImPro_doImPro.srv
+  Wheel_goTo.srv
 )
 
 ## Generate actions in the 'action' folder

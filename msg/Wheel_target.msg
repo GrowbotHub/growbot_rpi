@@ -1,2 +1,2 @@
 Header header
-int8 shelfID
+int16 target
