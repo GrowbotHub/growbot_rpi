@@ -9,6 +9,10 @@ from w1thermsensor import W1ThermSensor
 import Adafruit_DHT
 import rospy
 from math import floor
+import constants as cst
+
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BOARD)
 
 # Constants
 _RATE = 10 #Hz
@@ -19,6 +23,14 @@ pub_airTemp = 0
 pub_waterTemp = 0
 pub_humidity = 0
 pub_img = 0
+
+
+def pinSetup():
+    GPIO.setup(cst._PIN_DHT_G, GPIO.OUT)
+    GPIO.output(cst._PIN_DHT_G, GPIO.LOW)
+
+    GPIO.setup(cst._PIN_W1_1_3V3, GPIO.OUT)
+    GPIO.output(cst._PIN_W1_1_3V3, GPIO.HIGH)
 
 
 def takePic():
@@ -40,7 +52,7 @@ def takePic():
 
 def getSensorReading():
 	measTime = time.time()
-	humidity, temp_air = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, 24)
+	humidity, temp_air = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, cst._PIN_DHT_SIG)
 	DS18B20 = W1ThermSensor()
 	temp_water = DS18B20.get_temperature()
 
@@ -104,12 +116,14 @@ def publishMeasurements():
 def main():
     initPublisher()
     initServices()
+    pinSetup()
     rate = rospy.Rate(_RATE)
     rospy.loginfo("swag_interface : Running...")
     while not rospy.is_shutdown():
         publishMeasurements()
         rate.sleep()
 
+    GPIO.cleanup()
 
 if __name__ == '__main__':
     try:
