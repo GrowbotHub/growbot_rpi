@@ -51,11 +51,11 @@ def cb_alm(channel):
 	rospy.logerror("Driver sent ALARM signal ! Cleaning GPIO")
 	GPIO.cleanup()
 
-def cb_but_awo_falling(channel):
+def cb_but_awo_rising(channel):
 	rospy.loginfo("Winding switched off")
 	GPIO.output(cst._PIN_BUTAWO, GPIO.HIGH)
 
-def cb_but_awo_rising(channel):
+def cb_but_awo_falling(channel):
 	rospy.loginfo("Winding switched on")
 	rospy.logwarn("Current position set as 0, target set to 0")
 	GPIO.output(cst._PIN_BUTAWO, GPIO.LOW)
@@ -65,6 +65,24 @@ def cb_but_awo_rising(channel):
 	pos = 0
 	target = 0
 	distanceTraveled = 0
+
+
+def cb_but_awo(channel):
+	rospy.sleep(0.1)
+	if GPIO.input(channel) == GPIO.HIGH :
+		rospy.loginfo("Winding switched off")
+		GPIO.output(cst._PIN_BUTAWO, GPIO.HIGH)
+	else :
+		rospy.loginfo("Winding switched on")
+		rospy.logwarn("Current position set as 0, target set to 0")
+		GPIO.output(cst._PIN_BUTAWO, GPIO.LOW)
+		global pos
+		global target
+		global distanceTraveled
+		pos = 0
+		target = 0
+		distanceTraveled = 0
+
 
 def pinSetup():
 	GPIO.setup(cst._PIN_TIM, GPIO.OUT)
@@ -93,7 +111,8 @@ def pinSetup():
 
 	GPIO.add_event_detect(cst._PIN_ENC_A, GPIO.RISING, callback=cb_counter)
 	GPIO.add_event_detect(cst._PIN_ALM_G, GPIO.FALLING, callback=cb_alm)
-	GPIO.add_event_detect(cst._PIN_BUT_IN, GPIO.FALLING, callback=cb_but_awo_falling, bouncetime=200)
+	#GPIO.add_event_detect(cst._PIN_BUT_IN, GPIO.FALLING, callback=cb_but_awo_falling, bouncetime=200)
+	GPIO.add_event_detect(cst._PIN_BUT_IN, GPIO.BOTH, callback=cb_but_awo, bouncetime=200)
 	#GPIO.add_event_detect(cst._PIN_AWO_G, GPIO.FALLING 	, callback=cb_awo)  
 	global pwm
 	pwm = GPIO.PWM(cst._PIN_PWM, 5)
