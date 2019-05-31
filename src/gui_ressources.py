@@ -7,6 +7,7 @@ import constants as cst
 from gui.measurments import makeTempPlots
 from gui.measurments import makeHumPowerPlots
 from gui.wheel import makeWheelImg
+from server_v2 import main as initServer 
 
 airTemp = []
 time_airTemp = []
@@ -16,6 +17,8 @@ humidity = []
 time_humidity = []
 power = []
 time_power = []
+new_target = False
+target = 0
 
 
 def cb_airTemp(msg):
@@ -33,7 +36,10 @@ def cb_humidity(msg):
 	time_humidity.append(msg.measurmentTime.secs)
 
 def cb_target(msg):
-	makeWheelImg(msg.target*360/cst._P_PER_ROTATION)
+	global new_target
+	global target
+	new_target = True
+	target = msg.target*360/cst._P_PER_ROTATION
 
 
 def initPublisher():
@@ -55,11 +61,16 @@ def initServices():
 def main():
 	initSubscriber()
 	initPublisher()
+	#initServer()
 	rate = rospy.Rate(cst._PLOT_RATE)
 	rospy.loginfo("wheel_controller : Running...")
 	while not rospy.is_shutdown():
 		makeTempPlots(time_airTemp, airTemp, time_waterTemp, waterTemp)
 		makeHumPowerPlots(time_humidity, humidity, time_power, power)
+		global new_target
+		if new_target :
+			new_target = False
+			makeWheelImg(target)
 		rate.sleep()
 
 

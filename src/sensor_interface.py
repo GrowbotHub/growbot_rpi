@@ -48,30 +48,30 @@ def takePic():
 
 
 def getSensorReading():
-	measTime = time.time()
-	humidity, temp_air = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, cst._PIN_DHT_SIG)
-	DS18B20 = W1ThermSensor()
+    measTime = time.time()
+    humidity, temp_air = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, cst._PIN_DHT_SIG)
+    DS18B20 = W1ThermSensor()
     try:
         temp_water = DS18B20.get_temperature()
     except Exception as e:
         raise e
         rospy.logerr("W1ThermSensor failed to get temperature")
 
-	if humidity is None or temp_air is None: 
-		rospy.logwarn("None value for Adafruit DHT")
-		humidity = 0
-		temp_air = 0
+    if humidity is None or temp_air is None: 
+        rospy.logwarn("None value for Adafruit DHT")
+        humidity = 0
+        temp_air = 0
 
-	if temp_water is None: 
-		rospy.logwarn("None value for W1ThermSensor")
-		temp_water = 0
-	
-	#rospy.loginfo("Humid : %lf, air : %lf, water : %lf",humidity, temp_air, temp_water)
-	return humidity, temp_air, temp_water, measTime
+    if temp_water is None: 
+        rospy.logwarn("None value for W1ThermSensor")
+        temp_water = 0
+    
+    #rospy.loginfo("Humid : %lf, air : %lf, water : %lf",humidity, temp_air, temp_water)
+    return humidity, temp_air, temp_water, measTime
 
 def srvHdl_getImg(req):
-	imgFileName = takePic()
-	return str(imgFileName)
+    imgFileName = takePic()
+    return str(imgFileName)
 
 
 def initPublisher():
@@ -96,7 +96,7 @@ def publishMeasurements():
     msg_airTemp = Meas_sensor()
     msg_airTemp.value = temp_air
     msg_airTemp.measurmentTime.secs = sec
-    msg_airTemp	.measurmentTime.nsecs = nsec
+    msg_airTemp .measurmentTime.nsecs = nsec
     pub_airTemp.publish(msg_airTemp)
 
     #waterTemp    

@@ -34,12 +34,38 @@ class untitled(App):
         
     @staticmethod
     def construct_ui(self):
-        #print(gui.to_uri(gui.load_resource("./img/wheel.png")))
-        #DON'T MAKE CHANGES HERE, THIS METHOD GETS OVERWRITTEN WHEN SAVING IN THE EDITOR
-        mainLatAlign = VBox()
-        mainLatAlign.attributes.update({"editor_baseclass":"VBox","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"()","class":"VBox","editor_varname":"mainLatAlign"})
-        mainLatAlign.style.update({"align-items":"center","font-size":"20px","height":"1000px","overflow":"auto","font-style":"inherit","top":"0px","flex-direction":"column","width":"1920px","justify-content":"space-around","position":"absolute","font-weight":"bolder","margin":"0px","display":"flex","left":"0px"})
+        vertAlig = HBox()
+        vertAlig.attributes.update({"editor_baseclass":"HBox","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"()","class":"HBox","editor_varname":"vertAlig"})
+        vertAlig.style.update({"align-items":"center","height":"1000px","overflow":"auto","top":"40px","flex-direction":"row","width":"1920px","justify-content":"space-around","position":"absolute","margin":"0px","display":"flex","left":"0px"})
+
+        # COL 1 
+        col1 = VBox()
+        col1.attributes.update({"editor_baseclass":"VBox","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"()","class":"VBox","editor_varname":"col1"})
+        col1.style.update({"align-items":"center","height":"1000px","overflow":"auto","top":"0px","flex-direction":"column","order":"-1","width":"640px","justify-content":"space-around","position":"static","margin":"0px","display":"flex"})
         
+        # --- temperatures
+        global img_temp
+        img_temp.attributes.update({"src":"/my_res:tempPlots.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('tempPlots.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_temp"})
+        img_temp.style.update({"width":"640px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
+        col1.append(img_temp,'img_temp')
+
+        # --- humdidty power
+        global img_humidPower 
+        img_humidPower.attributes.update({"src":"/my_res:humPowerPlots.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('humPowerPlots.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_humidPower"})
+        img_humidPower.style.update({"width":"640px","position":"static","top":"390px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
+        col1.append(img_humidPower,'img_humidPower')
+
+        vertAlig.append(col1,'col1')
+
+
+
+        # COL 2
+        col2 = VBox()
+        col2.attributes.update({"editor_baseclass":"VBox","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"()","class":"VBox","editor_varname":"col2"})
+        col2.style.update({"align-items":"center","height":"1000px","overflow":"auto","top":"20px","flex-direction":"column","order":"-1","width":"640px","justify-content":"space-around","position":"static","margin":"0px","display":"flex"})
+        vertAlig.append(col2,'col2')
+        
+        # --- wiget
         wig_actions = Widget()
         wig_actions.attributes.update({"editor_baseclass":"Widget","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"()","class":"Widget","editor_varname":"wig_actions"})
         wig_actions.style.update({"width":"640px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
@@ -51,38 +77,39 @@ class untitled(App):
         btn_showLunarSoil.style.update({"width":"222px","font-weight":"inherit","font-size":"30px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"86px"})
         vertAlign_actions.append(btn_showLunarSoil,'btn_showLunarSoil')
         wig_actions.append(vertAlign_actions,'vertAlign_actions')
-        mainLatAlign.append(wig_actions,'wig_actions')
-        
-        global img_plantStatus
-        img_plantStatus.attributes.update({"src":"/my_res:plantState.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('plantState.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_plantStatus"})
-        img_plantStatus.style.update({"width":"640px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
-        mainLatAlign.append(img_plantStatus,'img_plantStatus')
-        
-        global img_wheelStatus
-        img_wheelStatus.attributes.update({"src":"/my_res:wheel.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('wheel.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_wheelStatus"})
-        img_wheelStatus.style.update({"width":"640px","position":"static","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
-        mainLatAlign.append(img_wheelStatus,'img_wheelStatus')
-        
-        global img_temp
-        img_temp.attributes.update({"src":"/my_res:tempPlots.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('tempPlots.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_temp"})
-        img_temp.style.update({"width":"640px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
-        mainLatAlign.append(img_temp,'img_temp')
-        
-        global img_humidPower 
-        img_humidPower.attributes.update({"src":"/my_res:humPowerPlots.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('humPowerPlots.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_humidPower"})
-        img_humidPower.style.update({"width":"640px","position":"static","top":"390px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
-        mainLatAlign.append(img_humidPower,'img_humidPower')
+        col2.append(wig_actions,'wig_actions')
 
+        # --- cam
         global img_cam
         img_cam.attributes.update({"src":'/my_res:pic.png',"editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('pic.jpg')","class":"Image","editor_tag_type":"widget","editor_varname":"img_cam"})
         img_cam.style.update({"width":"640px","position":"static","top":"390px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
-        mainLatAlign.append(img_cam,'img_cam')
+        col2.append(img_cam,'img_cam')
         
-        mainLatAlign.children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].onclick.do(self.onclick_btn_showLunarSoil)
         
 
-        self.mainLatAlign = mainLatAlign
-        return self.mainLatAlign
+
+        # COL 3
+        col3 = VBox()
+        col3.attributes.update({"editor_baseclass":"VBox","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"()","class":"VBox","editor_varname":"col3"})
+        col3.style.update({"align-items":"center","height":"1000px","overflow":"auto","top":"00px","flex-direction":"column","order":"-1","width":"640px","justify-content":"space-around","position":"static","margin":"0px","display":"flex"})
+        vertAlig.append(col3,'col3')
+        
+        # --- wheel status
+        global img_wheelStatus
+        img_wheelStatus.attributes.update({"src":"/my_res:wheel.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('wheel.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_wheelStatus"})
+        img_wheelStatus.style.update({"width":"640px","position":"static","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
+        col3.append(img_wheelStatus,'img_wheelStatus')
+
+        # --- plant satuts
+        global img_plantStatus
+        img_plantStatus.attributes.update({"src":"/my_res:plantState.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('plantState.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_plantStatus"})
+        img_plantStatus.style.update({"width":"640px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
+        col3.append(img_plantStatus,'img_plantStatus')
+        
+        #vertAlig.children['col1'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].onclick.do(self.onclick_btn_showLunarSoil)
+
+        self.vertAlig = vertAlig
+        return self.vertAlig
     
     def onclick_btn_showLunarSoil(self, emitter):
         pass
