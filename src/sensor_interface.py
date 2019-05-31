@@ -10,13 +10,9 @@ import Adafruit_DHT
 import rospy
 from math import floor
 import constants as cst
-
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 
-# Constants
-_RATE = 10 #Hz
-_PIC_LOGGING = False
 
 # Global Variable
 pub_airTemp = 0
@@ -30,14 +26,12 @@ def pinSetup():
     GPIO.output(cst._PIN_DHT_G, GPIO.LOW)
 
     GPIO.setup(cst._PIN_W1_1_3V3, GPIO.OUT)
-    GPIO.output(cst._PIN_W1_1_3V3, GPIO.HIGH)
+    GPIO.output(cst._PIN_W1_1_3V3, GPIO.HIGH)  
+    GPIO.setup(cst._PIN_W1_1_SIG, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 def takePic():
-    if _PIC_LOGGING :
-        imgFileName = '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/pic' + str(int(floor(time.time()))) + '.jpg'
-    else :
-        imgFileName = '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/pic.jpg'
+    imgFileName = cst._PICTURE_LOCATION + cst._PICTURE_NAME + cst._PICTURE_EXTENSION
 
     camera = PiCamera()
     camera.rotation = 90
@@ -45,6 +39,9 @@ def takePic():
     camera.start_preview()
     time.sleep(2)
     camera.capture(imgFileName)
+    if cst._PIC_LOGGING :
+        imgFileNameLOG = cst._PICTURE_LOCATION + cst._PICTURE_NAME + str(int(floor(time.time()))) + cst._PICTURE_EXTENSION
+        camera.capture(imgFileNameLOG)
     camera.stop_preview()
     camera.close()
     return imgFileName
@@ -54,7 +51,11 @@ def getSensorReading():
 	measTime = time.time()
 	humidity, temp_air = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, cst._PIN_DHT_SIG)
 	DS18B20 = W1ThermSensor()
-	temp_water = DS18B20.get_temperature()
+    try:
+        temp_water = DS18B20.get_temperature()
+    except Exception as e:
+        raise e
+        rospy.logerr("W1ThermSensor failed to get temperature")
 
 	if humidity is None or temp_air is None: 
 		rospy.logwarn("None value for Adafruit DHT")
@@ -117,7 +118,7 @@ def main():
     initPublisher()
     initServices()
     pinSetup()
-    rate = rospy.Rate(_RATE)
+    rate = rospy.Rate(cst._MEAS_RATE)
     rospy.loginfo("swag_interface : Running...")
     while not rospy.is_shutdown():
         publishMeasurements()

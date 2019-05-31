@@ -48,8 +48,8 @@ def cb_awo(channel):
 	rospy.logwarn("Current position set as 0 !")
 
 def cb_alm(channel):
-	rospy.logerror("Driver sent ALARM signal ! Cleaning GPIO")
-	GPIO.cleanup()
+	rospy.logerr("Driver sent ALARM signal !")
+	#GPIO.cleanup()
 
 def cb_but_awo_rising(channel):
 	rospy.loginfo("Winding switched off")
@@ -148,7 +148,7 @@ def goTo(init=False):
 
 def cb_target(data):
 	global target
-	if data.target < - cst._P_PER_ROTATION/2 or data.target > cst._P_PER_ROTATION/2 :
+	if data.target < 0 or data.target >= cst._P_PER_ROTATION :
 		rospy.logwarn("Out of range target recieved, command ignored...")
 	else :
 		target = data.target

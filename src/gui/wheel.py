@@ -2,16 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
+import constants as cst
 
 import numpy as np
 
-_ACTIVE_LOWER_TRESH = 120
-_ACTIVE_UPPER_TRESH = 150
 
-def makeWheelImg(angle, imgFileName="img/wheel.png",show=False):
+def makeWheelImg(angle, show=False):
 	center = np.array([0.5, 0.5])
 	radius = 0.22
 	shlefsize = np.array([0.2, 0.06])
+	imgFileName= cst._RESOURCE_FOLDER + "wheel.png"
 	#imgFileName = "img/wheel0.png"
 
 	def pol2cart(rho, phi):
@@ -52,14 +52,14 @@ def makeWheelImg(angle, imgFileName="img/wheel.png",show=False):
 
 	def isactive(position):
 		position = position%360
-		if position > _ACTIVE_LOWER_TRESH and position < _ACTIVE_UPPER_TRESH :
+		if position > cst._ACTIVE_LOWER_TRESH and position < cst._ACTIVE_UPPER_TRESH :
 			return True
 		else :
 			return False
 
 	drawShelf("Salad", "plum", angle, isactive(angle))
-	drawShelf("Radish", "bisque", angle + 90, isactive(angle + 90))
-	drawShelf("Lunar Soil 1", "greenyellow", angle + 180, isactive(angle + 180))
+	drawShelf("Lunar Soil 1", "greenyellow", angle + 90, isactive(angle + 90))
+	drawShelf("Radish", "bisque", angle + 180, isactive(angle + 180))
 	drawShelf("Lunar Soil 2", "cornflowerblue", angle + 270, isactive(angle + 270))
 
 
@@ -78,11 +78,11 @@ def makeWheelImg(angle, imgFileName="img/wheel.png",show=False):
 	return imgFileName
 
 
-file = open('img/lastWheel.txt', 'r')
-last = int(file.read())
+#file = open('img/lastWheel.txt', 'r')
+#last = int(file.read())
 #print(type(last), last)
-makeWheelImg(last, "img/wheel.png", True)
-file.close()
-file = open('img/lastWheel.txt', 'w')
-last = file.write(str(last + 1))
-file.close()
+#makeWheelImg(last, "img/wheel.png", True)
+#file.close()
+#file = open('img/lastWheel.txt', 'w')
+#last = file.write(str(last + 1))
+#file.close()

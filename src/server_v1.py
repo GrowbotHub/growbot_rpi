@@ -3,23 +3,31 @@
 import remi.gui as gui
 from remi.gui import *
 from remi import start, App
-import rospy
+#import rospy
+import constants as cst
 
 counter = 0
 img_wheelStatus = Image('/my_res:wheel.png')
+img_cam = Image('/my_res:pic.png')
+img_temp = Image('/my_res:tempPlots.png')
+img_humidPower = Image('/my_res:humPowerPlots.png')
+img_plantStatus = Image('/my_res:plantState.png')
 
 class untitled(App):
     def __init__(self, *args, **kwargs):
         #DON'T MAKE CHANGES HERE, THIS METHOD GETS OVERWRITTEN WHEN SAVING IN THE EDITOR
         if not 'editing_mode' in kwargs.keys():
             #super(untitled, self).__init__(*args, static_file_path={'my_res':'./img'})
-            super(untitled, self).__init__(*args, static_file_path={'my_res':'/home/pi/ros_catkin_ws/src/growbot_rpi/src/gui/img'})
+            super(untitled, self).__init__(*args, static_file_path={'my_res':cst._RESOURCE_FOLDER})
+            #super(untitled, self).__init__(*args, static_file_path={'my_res':'/home/pi/ros_catkin_ws/src/growbot_rpi/pictures'})
 
     def idle(self):
         #idle function called every update cycle
-
-        img_wheelStatus.attributes['src'] = gui.load_resource("/home/pi/ros_catkin_ws/src/growbot_rpi/src/gui/img/wheel.png")
-        pass
+        img_wheelStatus.attributes['src'] = gui.load_resource(cst._RESOURCE_FOLDER + "wheel.png")
+        img_cam.attributes['src'] = gui.load_resource(cst._PICTURE_LOCATION + cst._PICTURE_NAME + cst._PICTURE_EXTENSION)
+        img_temp.attributes['src'] = gui.load_resource(cst._RESOURCE_FOLDER + "tempPlots.png")
+        img_humidPower.attributes['src'] = gui.load_resource(cst._RESOURCE_FOLDER + "humPowerPlots.png")
+        img_plantStatus.attributes['src'] = gui.load_resource(cst._RESOURCE_FOLDER + "plantState.png")
     
     def main(self):
         return untitled.construct_ui(self)
@@ -45,7 +53,7 @@ class untitled(App):
         wig_actions.append(vertAlign_actions,'vertAlign_actions')
         mainLatAlign.append(wig_actions,'wig_actions')
         
-        img_plantStatus = Image('/my_res:plantState.png')
+        global img_plantStatus
         img_plantStatus.attributes.update({"src":"/my_res:plantState.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('plantState.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_plantStatus"})
         img_plantStatus.style.update({"width":"640px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
         mainLatAlign.append(img_plantStatus,'img_plantStatus')
@@ -55,18 +63,18 @@ class untitled(App):
         img_wheelStatus.style.update({"width":"640px","position":"static","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
         mainLatAlign.append(img_wheelStatus,'img_wheelStatus')
         
-        img_temp = Image('/my_res:tempPlots.png')
+        global img_temp
         img_temp.attributes.update({"src":"/my_res:tempPlots.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('tempPlots.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_temp"})
         img_temp.style.update({"width":"640px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
         mainLatAlign.append(img_temp,'img_temp')
         
-        img_humidPower = Image('/my_res:humPowerPlots.png')
+        global img_humidPower 
         img_humidPower.attributes.update({"src":"/my_res:humPowerPlots.png","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('humPowerPlots.png')","class":"Image","editor_tag_type":"widget","editor_varname":"img_humidPower"})
         img_humidPower.style.update({"width":"640px","position":"static","top":"390px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
         mainLatAlign.append(img_humidPower,'img_humidPower')
 
-        img_cam = Image('/my_res:cam.jpg')
-        img_cam.attributes.update({"src":"/my_res:cam.jpg","editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('cam.jpg')","class":"Image","editor_tag_type":"widget","editor_varname":"img_cam"})
+        global img_cam
+        img_cam.attributes.update({"src":'/my_res:pic.png',"editor_newclass":"False","editor_baseclass":"Image","editor_constructor":"('pic.jpg')","class":"Image","editor_tag_type":"widget","editor_varname":"img_cam"})
         img_cam.style.update({"width":"640px","position":"static","top":"390px","order":"-1","margin":"0px","overflow":"auto","height":"480px"})
         mainLatAlign.append(img_cam,'img_cam')
         
@@ -86,7 +94,7 @@ configuration = {'config_multiple_instance': False, 'config_address': '0.0.0.0',
 
 
 def main():
-    rospy.loginfo("gui_server : Running...")
+    #rospy.loginfo("gui_server : Running...")
     start(untitled, address=configuration['config_address'], port=configuration['config_port'], 
                         multiple_instance=configuration['config_multiple_instance'], 
                         enable_file_cache=configuration['config_enable_file_cache'],
@@ -97,7 +105,7 @@ def main():
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('gui_server', anonymous=True)
+        #rospy.init_node('gui_server', anonymous=True)
         main()
     except rospy.ROSInterruptException:
         pass

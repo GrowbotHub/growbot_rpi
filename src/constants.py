@@ -31,3 +31,20 @@ _MIN_SPEED = 5
 _DUTY_CYCLE = 50
 _P_PER_ROTATION = 8000
 _ACCELERATION_FACTOR = 3
+
+
+# SERVER
+_RESOURCE_FOLDER = '/home/pi/ros_catkin_ws/src/growbot_rpi/src/gui/img/'
+_MAX_PLOT_PTS = 100
+_PLOT_RATE = 0.1
+
+# SENSOR INTERFACE
+_MEAS_RATE = 10 #Hz
+_PIC_LOGGING = False #if True save
+_PICTURE_LOCATION = '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/'
+_PICTURE_NAME = 'pic'
+_PICTURE_EXTENSION = '.jpg'
+
+# WHEEL IMAGE
+_ACTIVE_LOWER_TRESH = 30
+_ACTIVE_UPPER_TRESH = 60
