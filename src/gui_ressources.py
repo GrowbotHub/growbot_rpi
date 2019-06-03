@@ -7,7 +7,6 @@ import constants as cst
 from gui.measurments import makeTempPlots
 from gui.measurments import makeHumPowerPlots
 from gui.wheel import makeWheelImg
-from server_v2 import main as initServer 
 
 airTemp = []
 time_airTemp = []
@@ -61,9 +60,9 @@ def initServices():
 def main():
 	initSubscriber()
 	initPublisher()
-	#initServer()
+
 	rate = rospy.Rate(cst._PLOT_RATE)
-	rospy.loginfo("wheel_controller : Running...")
+	rospy.loginfo("gui_ressources : Running...")
 	while not rospy.is_shutdown():
 		makeTempPlots(time_airTemp, airTemp, time_waterTemp, waterTemp)
 		makeHumPowerPlots(time_humidity, humidity, time_power, power)
@@ -80,3 +79,4 @@ if __name__ == '__main__':
 		main()
 	except rospy.ROSInterruptException:
 		pass
+		

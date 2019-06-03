@@ -37,9 +37,10 @@ _ACCELERATION_FACTOR = 3
 _RESOURCE_FOLDER = '/home/pi/ros_catkin_ws/src/growbot_rpi/src/gui/img/'
 _MAX_PLOT_PTS = 100
 _PLOT_RATE = 0.1
+_SRV_CONFIG = {'config_multiple_instance': False, 'config_address': '0.0.0.0', 'config_start_browser': False, 'config_enable_file_cache': False, 'config_project_name': 'GrowBotHub', 'config_port': 8081}
 
 # SENSOR INTERFACE
-_MEAS_RATE = 10 #Hz
+_MEAS_RATE = 0.1 #Hz
 _PIC_LOGGING = False #if True save
 _PICTURE_LOCATION = '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/'
 _PICTURE_NAME = 'pic'
@@ -48,3 +49,6 @@ _PICTURE_EXTENSION = '.jpg'
 # WHEEL IMAGE
 _ACTIVE_LOWER_TRESH = 30
 _ACTIVE_UPPER_TRESH = 60
+
+# GENERAL BEHVIOUR
+_COOL_DOWN_TIME = 5 # in seconds

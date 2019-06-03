@@ -50,8 +50,8 @@ def takePic():
 def getSensorReading():
     measTime = time.time()
     humidity, temp_air = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, cst._PIN_DHT_SIG)
-    DS18B20 = W1ThermSensor()
     try:
+        DS18B20 = W1ThermSensor()
         temp_water = DS18B20.get_temperature()
     except Exception as e:
         raise e

@@ -15,6 +15,7 @@ target = 0
 distanceTraveled = 0
 
 pub_done = 0
+pub_target = 0
 
 
 def saturatedSpeed(s):
@@ -51,21 +52,6 @@ def cb_alm(channel):
 	rospy.logerr("Driver sent ALARM signal !")
 	#GPIO.cleanup()
 
-def cb_but_awo_rising(channel):
-	rospy.loginfo("Winding switched off")
-	GPIO.output(cst._PIN_BUTAWO, GPIO.HIGH)
-
-def cb_but_awo_falling(channel):
-	rospy.loginfo("Winding switched on")
-	rospy.logwarn("Current position set as 0, target set to 0")
-	GPIO.output(cst._PIN_BUTAWO, GPIO.LOW)
-	global pos
-	global target
-	global distanceTraveled
-	pos = 0
-	target = 0
-	distanceTraveled = 0
-
 
 def cb_but_awo(channel):
 	rospy.sleep(0.1)
@@ -77,11 +63,13 @@ def cb_but_awo(channel):
 		rospy.logwarn("Current position set as 0, target set to 0")
 		GPIO.output(cst._PIN_BUTAWO, GPIO.LOW)
 		global pos
-		global target
 		global distanceTraveled
 		pos = 0
-		target = 0
 		distanceTraveled = 0
+		msg = Wheel_target()
+		msg.target = 0
+		rospy.loginfo("Msg published")
+		pub_target.publish(msg)
 
 
 def pinSetup():
@@ -93,6 +81,7 @@ def pinSetup():
 	GPIO.setup(cst._PIN_BUTAWO, GPIO.OUT)
 	GPIO.setup(cst._PIN_ALM_G, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(cst._PIN_BUT_IN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	GPIO.setup(16, GPIO.OUT)
 
 	GPIO.output(cst._PIN_TIM, GPIO.LOW)
 	GPIO.output(cst._PIN_TIM_G, GPIO.LOW)
@@ -100,7 +89,7 @@ def pinSetup():
 	GPIO.output(cst._PIN_CS_G, GPIO.LOW)
 	GPIO.output(cst._PIN_AWO_G, GPIO.LOW)
 	GPIO.output(cst._PIN_BUTAWO, GPIO.LOW)
-
+	GPIO.output(16, GPIO.HIGH)
 
 	GPIO.setup(cst._PIN_ENC_A, GPIO.IN)
 	GPIO.setup(cst._PIN_ENC_B, GPIO.IN)
@@ -156,7 +145,10 @@ def cb_target(data):
 
 def initPublisher():
     global pub_done
+    global pub_target
     pub_done = rospy.Publisher('/wheel/done', Wheel_moving, queue_size=10)
+    pub_target = rospy.Publisher('/wheel/target', Wheel_target, queue_size=10)
+
     
 def initSubscriber():
 	rospy.Subscriber("/wheel/target", Wheel_target, cb_target)

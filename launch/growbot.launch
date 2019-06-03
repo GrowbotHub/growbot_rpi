@@ -1,0 +1,10 @@
+<launch>
+	<machine name="rpi" address="localhost"/>
+	<node machine="rpi" pkg="growbot_rpi" type="pos_controller.py" name="pos_controller" />
+
+	<node machine="rpi" pkg="growbot_rpi" type="sensor_interface.py" name="sensor_interface" />
+
+	<node machine="rpi" pkg="growbot_rpi" type="gui_ressources.py" name="gui_ressources" />
+
+	<node machine="rpi" pkg="growbot_rpi" type="server_v2.py" name="server_v2" />
+</launch>
