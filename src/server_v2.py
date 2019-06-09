@@ -21,6 +21,7 @@ pub_target = None
 
 harvestCooledDown = True
 lunarSoilCooledDown = True
+ripCheckCooledDown = True
 
 def cb_harvestCoolDown(self):
     global harvestCooledDown
@@ -30,13 +31,17 @@ def cb_lunarSoilCoolDown(self):
     global lunarSoilCooledDown
     lunarSoilCooledDown = True
 
-class untitled(App):
+def cb_ripCheckCoolDown(self):
+    global ripCheckCooledDown
+    ripCheckCooledDown = True
+
+class GrowBotHubGUI(App):
     def __init__(self, *args, **kwargs):
         #DON'T MAKE CHANGES HERE, THIS METHOD GETS OVERWRITTEN WHEN SAVING IN THE EDITOR
         if not 'editing_mode' in kwargs.keys():
-            #super(untitled, self).__init__(*args, static_file_path={'my_res':'./img'})
-            super(untitled, self).__init__(*args, static_file_path={'my_res':cst._RESOURCE_FOLDER})
-            #super(untitled, self).__init__(*args, static_file_path={'my_res':'/home/pi/ros_catkin_ws/src/growbot_rpi/pictures'})
+            #super(GrowBotHubGUI, self).__init__(*args, static_file_path={'my_res':'./img'})
+            super(GrowBotHubGUI, self).__init__(*args, static_file_path={'my_res':cst._RESOURCE_FOLDER})
+            #super(GrowBotHubGUI, self).__init__(*args, static_file_path={'my_res':'/home/pi/ros_catkin_ws/src/growbot_rpi/pictures'})
 
     def idle(self):
         #idle function called every update cycle
@@ -44,6 +49,8 @@ class untitled(App):
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].style['background-color'] = "default"
         if harvestCooledDown :
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_harvest'].style['background-color'] = "default"
+        if ripCheckCooledDown :
+            self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_ripCheck'].style['background-color'] = "default"
 
         img_wheelStatus.attributes['src'] = gui.load_resource(cst._RESOURCE_FOLDER + "wheel.png")
         img_cam.attributes['src'] = gui.load_resource(cst._PICTURE_LOCATION + cst._PICTURE_NAME + cst._PICTURE_EXTENSION)
@@ -52,7 +59,7 @@ class untitled(App):
         img_plantStatus.attributes['src'] = gui.load_resource(cst._RESOURCE_FOLDER + "plantState.png")
     
     def main(self):
-        return untitled.construct_ui(self)
+        return GrowBotHubGUI.construct_ui(self)
 
     def stop(self):
         self.server.server_starter_instance._alive = False
@@ -99,14 +106,18 @@ class untitled(App):
         vertAlign_actions = VBox()
         vertAlign_actions.attributes.update({"editor_baseclass":"VBox","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"()","class":"VBox","editor_varname":"vertAlign_actions"})
         vertAlign_actions.style.update({"align-items":"center","height":"480px","overflow":"auto","flex-direction":"column","width":"640px","justify-content":"space-around","position":"relative","margin":"0px","display":"flex"})
-        btn_showLunarSoil = Button('Show Lunar Soil')
-        btn_showLunarSoil.attributes.update({"editor_baseclass":"Button","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"('Show Lunar Soil')","class":"Button","editor_varname":"btn_showLunarSoil"})
+        btn_showLunarSoil = Button('Handle Lunar Soil')
+        btn_showLunarSoil.attributes.update({"editor_baseclass":"Button","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"('Handle Lunar Soil')","class":"Button","editor_varname":"btn_showLunarSoil"})
         btn_showLunarSoil.style.update({"width":"222px","font-weight":"inherit","font-size":"30px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"86px"})
         vertAlign_actions.append(btn_showLunarSoil,'btn_showLunarSoil')
         btn_harvest = Button('Harvest a plant')
         btn_harvest.attributes.update({"editor_baseclass":"Button","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"('Harvest a plant')","class":"Button","editor_varname":"btn_harvest"})
         btn_harvest.style.update({"width":"222px","font-weight":"inherit","font-size":"30px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"86px"})
         vertAlign_actions.append(btn_harvest,'btn_harvest')
+        btn_ripCheck = Button('Perform ripeness check')
+        btn_ripCheck.attributes.update({"editor_baseclass":"Button","editor_tag_type":"widget","editor_newclass":"False","editor_constructor":"('Perform ripeness check')","class":"Button","editor_varname":"btn_ripCheck"})
+        btn_ripCheck.style.update({"width":"222px","font-weight":"inherit","font-size":"30px","position":"static","top":"20px","order":"-1","margin":"0px","overflow":"auto","height":"86px"})
+        vertAlign_actions.append(btn_ripCheck,'btn_ripCheck')
         wig_actions.append(vertAlign_actions,'vertAlign_actions')
         col2.append(wig_actions,'wig_actions')
 
@@ -139,6 +150,7 @@ class untitled(App):
         
         vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].onclick.do(self.onclick_btn_showLunarSoil)
         vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_harvest'].onclick.do(self.onclikc_btn_harvest)
+        vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_ripCheck'].onclick.do(self.onclikc_btn_ripCheck)
 
         self.vertAlig = vertAlig
         return self.vertAlig
@@ -148,27 +160,34 @@ class untitled(App):
         global lunarSoilCooledDown
         if lunarSoilCooledDown :
             msg = User_cmd()
-            msg.cmdID = 1
+            msg.cmdID = cst._CMDID_LS
             pub_usrCmd.publish(msg)
             lunarSoilCooledDown = False
             rospy.Timer(rospy.Duration(cst._COOL_DOWN_TIME), cb_lunarSoilCoolDown, oneshot=True)
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].style['background-color'] = "#a0a0a0"
-            target = Wheel_target()
-            target.target = 0
-            #pub_target.publish(target)
+           
 
     def onclikc_btn_harvest(self, emitter):
         global harvestCooledDown
         if harvestCooledDown :
             msg = User_cmd()
-            msg.cmdID = 2
+            msg.cmdID = cst._CMDID_HARVEST
             pub_usrCmd.publish(msg)
             harvestCooledDown = False
             rospy.Timer(rospy.Duration(cst._COOL_DOWN_TIME), cb_harvestCoolDown, oneshot=True)
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_harvest'].style['background-color'] = "#a0a0a0"
-            target = Wheel_target()
-            target.target = 2000
-            #pub_target.publish(target)
+
+
+    def onclikc_btn_ripCheck(self, emitter):
+        global ripCheckCooledDown
+        if ripCheckCooledDown :
+            msg = User_cmd()
+            msg.cmdID = cst._CMDIF_RIPCHECK
+            pub_usrCmd.publish(msg)
+            ripCheckCooledDown = False
+            rospy.Timer(rospy.Duration(cst._RIPCHECK_COOL_DOWN_TIME), cb_ripCheckCoolDown, oneshot=True)
+            self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_ripCheck'].style['background-color'] = "#a0a0a0"
+            
 
 def initPublisher():
     global pub_usrCmd
@@ -181,7 +200,7 @@ def main():
     initPublisher()
     configuration = cst._SRV_CONFIG
     rospy.loginfo("gui_server : Running...")
-    start(untitled, address=configuration['config_address'], port=configuration['config_port'], 
+    start(GrowBotHubGUI, address=configuration['config_address'], port=configuration['config_port'], 
                         multiple_instance=configuration['config_multiple_instance'], 
                         enable_file_cache=configuration['config_enable_file_cache'],
                         start_browser=configuration['config_start_browser'])

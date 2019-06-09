@@ -81,7 +81,7 @@ def pinSetup():
 	GPIO.setup(cst._PIN_BUTAWO, GPIO.OUT)
 	GPIO.setup(cst._PIN_ALM_G, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 	GPIO.setup(cst._PIN_BUT_IN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	GPIO.setup(16, GPIO.OUT)
+	GPIO.setup(cst._PIN_BUT_LED, GPIO.OUT)
 
 	GPIO.output(cst._PIN_TIM, GPIO.LOW)
 	GPIO.output(cst._PIN_TIM_G, GPIO.LOW)
@@ -89,7 +89,7 @@ def pinSetup():
 	GPIO.output(cst._PIN_CS_G, GPIO.LOW)
 	GPIO.output(cst._PIN_AWO_G, GPIO.LOW)
 	GPIO.output(cst._PIN_BUTAWO, GPIO.LOW)
-	GPIO.output(16, GPIO.HIGH)
+	GPIO.output(cst._PIN_BUT_LED, GPIO.HIGH)
 
 	GPIO.setup(cst._PIN_ENC_A, GPIO.IN)
 	GPIO.setup(cst._PIN_ENC_B, GPIO.IN)

@@ -23,6 +23,7 @@ _PIN_BUTAWO = 15
 _PIN_ALM_G = 23
 
 _PIN_BUT_IN = 11
+_PIN_BUT_LED = 16
 
 
 # WHEEL CONTROLER CONSTANTS
@@ -45,6 +46,8 @@ _PIC_LOGGING = False #if True save
 _PICTURE_LOCATION = '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/'
 _PICTURE_NAME = 'pic'
 _PICTURE_EXTENSION = '.jpg'
+_DATA_LOGGING = False
+_DATA_LOCATION = '/home/pi/ros_catkin_ws/src/growbot_rpi/sensorLog/'
 
 # WHEEL IMAGE
 _ACTIVE_LOWER_TRESH = 30
@@ -52,3 +55,10 @@ _ACTIVE_UPPER_TRESH = 60
 
 # GENERAL BEHVIOUR
 _COOL_DOWN_TIME = 5 # in seconds
+_RIPCHECK_COOL_DOWN_TIME = 8
+
+# USER COMMANDS
+_CMDID_LS = 1
+_CMDID_HARVEST = 2
+_CMDIF_RIPCHECK = 3
+

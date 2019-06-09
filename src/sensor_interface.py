@@ -20,6 +20,8 @@ pub_waterTemp = 0
 pub_humidity = 0
 pub_img = 0
 
+logFileName = cst._DATA_LOCATION + "sensorLog_" +str(int(floor(time.time()))) + ".txt"
+
 
 def pinSetup():
     GPIO.setup(cst._PIN_DHT_G, GPIO.OUT)
@@ -27,7 +29,7 @@ def pinSetup():
 
     GPIO.setup(cst._PIN_W1_1_3V3, GPIO.OUT)
     GPIO.output(cst._PIN_W1_1_3V3, GPIO.HIGH)  
-    GPIO.setup(cst._PIN_W1_1_SIG, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    #GPIO.setup(cst._PIN_W1_1_SIG, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 def takePic():
@@ -47,16 +49,19 @@ def takePic():
     return imgFileName
 
 
+def logSensorData(humidity, temp_air, temp_water, measTime):
+    logFile = open(logFileName, "a")
+    logFile.write(str(measTime) + ", " + str(humidity) + ", " + str(temp_air) + ", " + str(temp_water) + ";\n")
+    logFile.close()
+
+
 def getSensorReading():
     measTime = time.time()
     humidity, temp_air = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11, cst._PIN_DHT_SIG)
-    try:
-        DS18B20 = W1ThermSensor()
-        temp_water = DS18B20.get_temperature()
-    except Exception as e:
-        raise e
-        rospy.logerr("W1ThermSensor failed to get temperature")
-
+    temp_water = None
+    #DS18B20 = W1ThermSensor()
+    #temp_water = DS18B20.get_temperature()
+    
     if humidity is None or temp_air is None: 
         rospy.logwarn("None value for Adafruit DHT")
         humidity = 0
@@ -67,6 +72,8 @@ def getSensorReading():
         temp_water = 0
     
     #rospy.loginfo("Humid : %lf, air : %lf, water : %lf",humidity, temp_air, temp_water)
+    if cst._DATA_LOGGING :
+        logSensorData(humidity, temp_air, temp_water, measTime)
     return humidity, temp_air, temp_water, measTime
 
 def srvHdl_getImg(req):

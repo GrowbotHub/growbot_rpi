@@ -1,23 +1,43 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.patches as mpatches
+import constants as cst
+import random
 
 vegetable = ["Salad", "Radish", "Lunar Soil 1", "Lunar Soil 2"]
 shelfColor = ["plum", "bisque", "greenyellow", "cornflowerblue"]
 
-defaultPotState = [["red","orange","green","red","orange","green","red","orange"],["red","red","red","red","red","red","red","red"],["red","red","red","red","red","red","red","red"],["red","red","red","red","red","red","red","red"]]
+#defaultPotState = [["black","orange","green","red","orange","green","red","orange", "black","orange","green","red","orange","green","red","orange"],["red","orange","green","red","orange","green","red","orange", "red","red","red","red","red","red","red","red"],["red","orange","green","red","orange","green","red","orange", "red","red","red","red","red","red","red","red"],["red","orange","green","red","orange","green","red","orange", "red","red","red","red","red","red","red","red"]]
 
-def makePlantStateImg(potState, show=False) :
-	imgFileName = "plantState.png"
+potColor = ["red", "orange", "greenyellow", "green"]
+
+def generateRandomPotColors():
+	potList = []
+	for shelf in range(0,4)	:
+		temp = []
+		for pot in range(0,16) :
+			temp.append(random.choice(potColor))
+		temp[0] = "black"
+		temp[7] = "black"
+		temp[8] = "black"
+		temp[15] = "black"
+		potList.append(temp)
+	return potList
+
+
+def makePlantStateImg(potState=None, show=False) :
+	if potState == None :
+		potState = generateRandomPotColors()
+	imgFileName = cst._RESOURCE_FOLDER + "plantState.png"
 	fig, ax = plt.subplots()
 
-	nbrPotPerRow = 4
+	nbrPotPerRow = 8
 	nbrPotPerCol = 2
 
-	shelfLenX = 0.3
+	shelfLenX = 0.40
 	shelfLenY = shelfLenX/(nbrPotPerRow-1)
 
-	constY = 0.55
+	constY = 0.35
 	constX = 1.1 
 	shelfPosY = [0.5 - shelfLenY/constY, 0.5 + shelfLenY/constY]
 	shelfPosX = [0.5 - shelfLenX/constX, 0.5 + shelfLenX/constX]
@@ -55,4 +75,4 @@ def makePlantStateImg(potState, show=False) :
 	return imgFileName
 
 
-makePlantStateImg(defaultPotState)
+#makePlantStateImg(defaultPotState)

@@ -3,9 +3,11 @@
 import rospy
 from growbot_msg.msg import Meas_sensor
 from growbot_msg.msg import Wheel_target
+from growbot_msg.msg import User_cmd
 import constants as cst 
 from gui.measurments import makeTempPlots
 from gui.measurments import makeHumPowerPlots
+from gui.plants import makePlantStateImg
 from gui.wheel import makeWheelImg
 
 airTemp = []
@@ -18,6 +20,7 @@ power = []
 time_power = []
 new_target = False
 target = 0
+new_plantState = False
 
 
 def cb_airTemp(msg):
@@ -41,6 +44,11 @@ def cb_target(msg):
 	target = msg.target*360/cst._P_PER_ROTATION
 
 
+def cb_plants(msg):
+	global new_plantState
+	if msg.cmdID == cst._CMDIF_RIPCHECK :
+		new_plantState = True
+
 def initPublisher():
 	pass
 
@@ -50,6 +58,9 @@ def initSubscriber():
 	rospy.Subscriber("/meas/waterTemp", Meas_sensor, cb_waterTemp)
 	rospy.Subscriber("/meas/humidity", Meas_sensor, cb_humidity)
 	rospy.Subscriber("/wheel/target", Wheel_target, cb_target)
+
+	# Cheating...
+	rospy.Subscriber("/usr/cmd", User_cmd, cb_plants)
 
 
 def initServices():
@@ -70,6 +81,11 @@ def main():
 		if new_target :
 			new_target = False
 			makeWheelImg(target)
+
+		global new_plantState
+		if new_plantState :
+			new_plantState = False
+			makePlantStateImg()
 		rate.sleep()
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-_FAKE_IMPRO = False
+_FAKE_IMPRO = True
 
 import rospy
 from growbot_msg.srv import ImPro_doImPro
@@ -85,7 +85,7 @@ def checkRipeness(imgFileName):
 def getImage():
     # TODO check robArm not moving
     # TODO check whell not moving
-    return '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/pic.jpg'
+    #return '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/pic.jpg'
     try:
         rospy.wait_for_service('/imPro/getImg')
         getPic = rospy.ServiceProxy('/imPro/getImg', ImPro_getImg)
