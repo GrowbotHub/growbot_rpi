@@ -50,8 +50,8 @@ _DATA_LOGGING = False
 _DATA_LOCATION = '/home/pi/ros_catkin_ws/src/growbot_rpi/sensorLog/'
 
 # WHEEL IMAGE
-_ACTIVE_LOWER_TRESH = 30
-_ACTIVE_UPPER_TRESH = 60
+_ACTIVE_LOWER_TRESH = 120
+_ACTIVE_UPPER_TRESH = 150
 
 # GENERAL BEHVIOUR
 _COOL_DOWN_TIME = 5 # in seconds

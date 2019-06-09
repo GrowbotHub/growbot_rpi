@@ -12,6 +12,16 @@ GPIO.setmode(GPIO.BOARD)
 pos = 0
 pwm = None
 target = 0
+posSaveFileName = "/home/pi/ros_catkin_ws/src/growbot_rpi/sensorLog/posWhenShutdown.txt"
+try:
+	f = open(posSaveFileName, "r")
+	pos = int(f.read())
+	rospy.loginfo("Wheel starts at position : " + str(pos))
+	f.close()
+except Exception as e:
+	rospy.logwarn("Unable to find : " + posSaveFileName)
+	pos = 0
+
 distanceTraveled = 0
 
 pub_done = 0
@@ -42,11 +52,6 @@ def cb_counter(channel):
 	distanceTraveled = distanceTraveled + 1
 	goTo()
 
-
-def cb_awo(channel):
-	global pos
-	pos = 0
-	rospy.logwarn("Current position set as 0 !")
 
 def cb_alm(channel):
 	rospy.logerr("Driver sent ALARM signal !")
@@ -173,6 +178,9 @@ if __name__ == '__main__':
 	try:
 		rospy.init_node('wheel_controller', anonymous=True)
 		main()
+		f = open(posSaveFileName, "w")
+		f.write(str(target))
+		f.close()
 		GPIO.cleanup()
 	except rospy.ROSInterruptException:
 		pass

@@ -9,20 +9,28 @@ from growbot_msg.msg import Dispenser_moving
 
 GPIO.setmode(GPIO.BOARD)
 
-pub_done = None
+pub_dispMov = None
 pwm = None
 
 _PIN_DIS_DIR = 16
 _PIN_DIS_STEP = 18
 
-def initPublisher():
-    global pub_done
-    #pub_done = rospy.Publisher('/dispenser/done', Dispenser_cmd, queue_size=10)
 
+def cb_dispenser_cmd(data):
+    rospy.loginfo("Recieved dispenser trigger, waiting a bit")
+    rospy.sleep(5)
+    msg = Dispenser_moving()
+    msg.isMoving = False
+    pub_dispMov.publish(msg)
+    rospy.loginfo("Dispenser done")
+
+def initPublisher():
+    global pub_dispMov
+    pub_dispMov = rospy.Publisher('/dispenser/moving', Dispenser_moving, queue_size=10)
+    
     
 def initSubscriber():
-    pass
-    #rospy.Subscriber("/dispenser/cmd", Wheel_target, cb_target)
+    rospy.Subscriber("/dispenser/cmd", Dispenser_cmd, cb_dispenser_cmd)
 
 def pinSetup():
     GPIO.setup(_PIN_DIS_STEP, GPIO.OUT)
@@ -38,8 +46,7 @@ def pinSetup():
 
 
 def main():
-    global target
-    pinSetup()
+    #pinSetup()
     initSubscriber()
     initPublisher()
     rospy.loginfo("dispenser : Running...")
