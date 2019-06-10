@@ -19,17 +19,12 @@ usrCmdQueue = None
 pub_usrCmd = None
 pub_target = None
 
-harvestCooledDown = True
-lunarSoilCooledDown = True
+CooledDown = True
 ripCheckCooledDown = True
 
-def cb_harvestCoolDown(self):
-    global harvestCooledDown
-    harvestCooledDown = True
-
-def cb_lunarSoilCoolDown(self):
-    global lunarSoilCooledDown
-    lunarSoilCooledDown = True
+def cb_CoolDown(self):
+    global CooledDown
+    CooledDown = True
 
 def cb_ripCheckCoolDown(self):
     global ripCheckCooledDown
@@ -45,9 +40,8 @@ class GrowBotHubGUI(App):
 
     def idle(self):
         #idle function called every update cycle
-        if lunarSoilCooledDown :
+        if CooledDown :
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].style['background-color'] = "default"
-        if harvestCooledDown :
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_harvest'].style['background-color'] = "default"
         if ripCheckCooledDown :
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_ripCheck'].style['background-color'] = "default"
@@ -155,27 +149,31 @@ class GrowBotHubGUI(App):
         self.vertAlig = vertAlig
         return self.vertAlig
 
+    def startCooldown(self):
+        global CooledDown
+        rospy.loginfo("startCooldown")
+        CooledDown = False
+        rospy.Timer(rospy.Duration(cst._COOL_DOWN_TIME), cb_CoolDown, oneshot=True)
+        self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].style['background-color'] = "#a0a0a0"
+        self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_harvest'].style['background-color'] = "#a0a0a0"    
+        
 
     def onclick_btn_showLunarSoil(self, emitter):
-        global lunarSoilCooledDown
-        if lunarSoilCooledDown :
+        global CooledDown
+        if CooledDown :
             msg = User_cmd()
             msg.cmdID = cst._CMDID_LS
             pub_usrCmd.publish(msg)
-            lunarSoilCooledDown = False
-            rospy.Timer(rospy.Duration(cst._COOL_DOWN_TIME), cb_lunarSoilCoolDown, oneshot=True)
-            self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].style['background-color'] = "#a0a0a0"
-           
+            self.startCooldown()
+            
 
     def onclikc_btn_harvest(self, emitter):
-        global harvestCooledDown
-        if harvestCooledDown :
+        global CooledDown
+        if CooledDown :
             msg = User_cmd()
             msg.cmdID = cst._CMDID_HARVEST
             pub_usrCmd.publish(msg)
-            harvestCooledDown = False
-            rospy.Timer(rospy.Duration(cst._COOL_DOWN_TIME), cb_harvestCoolDown, oneshot=True)
-            self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_harvest'].style['background-color'] = "#a0a0a0"
+            self.startCooldown()
 
 
     def onclikc_btn_ripCheck(self, emitter):

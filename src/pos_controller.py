@@ -138,6 +138,7 @@ def goTo(init=False):
 		rospy.loginfo("Target reached, current pos : " + str(pos))
 		msg = Wheel_moving()
 		msg.isMoving = False
+		rospy.sleep(0.1)
 		pub_done.publish(msg)
 
 def cb_target(data):

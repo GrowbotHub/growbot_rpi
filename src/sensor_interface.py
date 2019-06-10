@@ -29,7 +29,7 @@ def pinSetup():
 
     GPIO.setup(cst._PIN_W1_1_3V3, GPIO.OUT)
     GPIO.output(cst._PIN_W1_1_3V3, GPIO.HIGH)  
-    #GPIO.setup(cst._PIN_W1_1_SIG, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(cst._PIN_W1_1_SIG, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 def takePic():
