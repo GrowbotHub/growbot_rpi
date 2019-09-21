@@ -40,7 +40,7 @@ class GrowBotHubGUI(App):
 
     def idle(self):
         #idle function called every update cycle
-        if CooledDown :
+        if CooledDown:
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_showLunarSoil'].style['background-color'] = "default"
             self.vertAlig.children['col2'].children['wig_actions'].children['vertAlign_actions'].children['btn_harvest'].style['background-color'] = "default"
         if ripCheckCooledDown :
