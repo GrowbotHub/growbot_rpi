@@ -90,7 +90,7 @@ def getImage():
         rospy.wait_for_service('/imPro/getImg')
         getPic = rospy.ServiceProxy('/imPro/getImg', ImPro_getImg)
         return getPic()
-    except rospy.ServiceException, e:
+    except rospy.ServiceException as e:
         rospy.logerr("Service call failed: %s", e)
         rospy.logwarn("Returned default image path")
         return '/home/pi/ros_catkin_ws/src/growbot_rpi/pictures/pic.jpg'

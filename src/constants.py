@@ -1,3 +1,6 @@
+from tempfile import gettempdir
+import os
+
 
 # GPIO DEFINITION 
 # pin 7 does not work for event detection 
@@ -35,7 +38,7 @@ _ACCELERATION_FACTOR = 3
 
 
 # SERVER
-_RESOURCE_FOLDER = '/home/pi/ros_catkin_ws/src/growbot_rpi/src/gui/img/'
+_RESOURCE_FOLDER = os.path.join(gettempdir(), 'rpi')
 _MAX_PLOT_PTS = 100
 _PLOT_RATE = 0.1
 _SRV_CONFIG = {'config_multiple_instance': False, 'config_address': '0.0.0.0', 'config_start_browser': False, 'config_enable_file_cache': False, 'config_project_name': 'GrowBotHub', 'config_port': 8081}
